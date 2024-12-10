@@ -1,25 +1,34 @@
 package repository
 
 import (
-	"fmt"
-	"log"
-	entity "trainig_api/model"
+	"trainig_api/model"
 
 	"gorm.io/gorm"
 )
 
 type IUserRepository interface {
-	GetUserByEmail(email string) error
+	GetUserByEmail(user *model.User, email string) error
+	CreateUser(user *model.User) error
 }
 
-func Insert(db *gorm.DB) {
-	user := entity.User{
-		Email:    "",
-		Password: "",
+type userRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) IUserRepository {
+	return &userRepository{db}
+}
+
+func (ur *userRepository) GetUserByEmail(user *model.User, email string) error {
+	if err := ur.db.Where("email=?", email).First(user).Error; err != nil {
+		return err
 	}
-	result := db.Create(&user)
-	if result.Error != nil {
-		log.Fatal(result.Error)
+	return nil
+}
+
+func (ur *userRepository) CreateUser(user *model.User) error {
+	if err := ur.db.Create(user).Error; err != nil {
+		return err
 	}
-	fmt.Println("count:", result.RowsAffected)
+	return nil
 }

@@ -12,5 +12,5 @@ RUN go mod download
 COPY . .
 
 # アプリケーションを実行
-CMD ["go", "run", "migrate/migrate.go"]
+CMD ["go", "run", "main.go"]
 

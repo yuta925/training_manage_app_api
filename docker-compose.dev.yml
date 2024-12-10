@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: /bin/sh -c "go run migrate/migrate.go"
+    command: /bin/sh -c "GO_ENV=dev go run main.go"
     env_file: .env
     stdin_open: true
     tty: true
