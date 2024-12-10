@@ -1,0 +1,36 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0
+    container_name: training-manage-app-db
+    env_file: .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - TZ="Asia/Tokyo"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3306:3306
+  go:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /bin/sh -c "go run migrate/migrate.go"
+    env_file: .env
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/go/src
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+    driver: local
