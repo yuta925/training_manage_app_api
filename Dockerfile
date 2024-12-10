@@ -13,4 +13,3 @@ COPY . .
 
 # アプリケーションを実行
 CMD ["go", "run", "main.go"]
-
